@@ -62,56 +62,73 @@ func (u *ShopCartRepo) GetById(req *models.ShopCartprimarykey) (*models.ShopCart
 	}
 	return &item, nil
 }
-
 func (u *ShopCartRepo) GetAll(req *models.ShopCartGetListRequest) (*models.ShopCartGetListResponse, error) {
+
 	var resp = &models.ShopCartGetListResponse{}
 	resp.Items = []*models.ShopCart{}
-
 	ShopCartMap, err := u.read()
 	if err != nil {
 		return nil, err
 	}
-
-	resp.Count = len(ShopCartMap) //len
+	resp.Count = len(ShopCartMap)
 	for _, val := range ShopCartMap {
 		user := val
-		resp.Items = append(resp.Items, &user)
+		for _, value := range user {
+			resp.Items = append(resp.Items, &value)
+
+		}
 	}
+
+	return resp, nil
 }
+func (u *ShopCartRepo) Update(req *models.UpdateShopCart) (*models.ShopCart, error) {
+	var resp models.ShopCart
+	items, err := u.read()
+	if err != nil {
+		return nil, err
+	}
+	if _, ok := items[req.UserId]; !ok {
+		return nil, errors.New("ShopCart not found!")
+	}
+	for _, itm := range items[req.UserId] {
+		if itm.UserId == req.UserId {
+			itm = models.ShopCart{
+				ProductId: req.ProductId,
+				UserId:    req.UserId,
+				Count:     req.Count,
+				Status:    req.Status,
+				Time:      req.Time,
+			}
+			resp = itm
+		}
+	}
 
-// 	return resp, nil
-// }
-// func (u *ShopCartRepo) Update(req *models.UpdateShopCart) (*models.ShopCart, error) {
-// 	var resp models.ShopCart
-// 	items, err := u.read()
-// 	if err != nil {
-// 		return nil, err
-// 	}
-// 	if _, ok := items[req.UserId]; !ok {
-// 		return nil, errors.New("ShopCart not found!")
-// 	}
+	err = u.write(items)
+	if err != nil {
+		return nil, err
+	}
+	return &resp, nil
+}
+func (u *ShopCartRepo) Delete(req *models.ShopCartprimarykey) error {
+	items, err := u.read()
+	if err != nil {
+		return err
+	}
+	for _, val := range items {
+		user := val
+		for _, value := range user {
+			if value.UserId == req.UserId && value.ProductId == req.ProductId {
+				delete(items, req.UserId)
+			}
+		}
+	}
+	err = u.write(items)
+	if err != nil {
+		return err
+	}
 
-// 	items[req.UserId] = models.ShopCart{
-// 		ProductId: req.ProductId,
-// 		UserId:    req.UserId,
-// 		Count:     req.Count,
-// 		Status:    req.Status,
-// 		Time:
-// 	}
-// }
-// func (u *ShopCartRepo) Delete(req *models.ShopCartprimarykey) error {
-// 	items, err := u.read()
-// 	if err != nil {
-// 		return err
-// 	}
-
-// 	err = u.write(items)
-// 	if err != nil {
-// 		return err
-// 	}
-
-// 	return nil
-// }
+	return nil
+}
 func (u *ShopCartRepo) read() (map[string][]models.ShopCart, error) {
 	var (
 		items       []*models.ShopCart

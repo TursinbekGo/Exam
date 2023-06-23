@@ -48,3 +48,7 @@ func (c *Controller) UserDelete(req *models.UserPrimaryKey) error {
 	}
 	return nil
 }
+func (c *Controller) UserHistory(req *models.ShopCartprimarykey) (*models.UserHistory, error) {
+	return nil, nil
+}
+func (c *Controller) UserMoneySpent()

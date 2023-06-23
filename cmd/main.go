@@ -16,26 +16,29 @@ func main() {
 	}
 	con := controller.NewController(&cfg, strg)
 	//User
-	//CreateNewUser(con)
-	//GetUserByID(con)
-	//GetAll_Users(con)
-	//Update_User(con)
-	//Delete_User(con)
+	CreateNewUser(con)
+	GetUserByID(con)
+	GetAll_Users(con)
+	Update_User(con)
+	Delete_User(con)
 	//Product
-	//CreateNewProduct(con)
-	//GetProductByID(con)
-	//Update_Product(con)
-	//Delete_Product(con)
-	//GetAll_Products(con)
+	CreateNewProduct(con)
+	GetProductByID(con)
+	Update_Product(con)
+	Delete_Product(con)
+	GetAll_Products(con)
 	//Category
-	//CreateNewCategory(con)
-	//GetCategoryByID(con)
-	//GetAll_Categoties(con)
-	//Update_Category(con)
-	//Delete_Category(con)
+	CreateNewCategory(con)
+	GetCategoryByID(con)
+	GetAll_Categoties(con)
+	Update_Category(con)
+	Delete_Category(con)
 	//ShopCart
-	//CreateNewShopCart(con)
+	CreateNewShopCart(con)
 	GetShopCartByID(con)
+	GetAll_ShopCarts(con)
+	Update_ShopCart(con)
+	Delete_ShopCard(con)
 
 }
 
@@ -160,8 +163,31 @@ func CreateNewShopCart(con *controller.Controller) {
 }
 func GetShopCartByID(con *controller.Controller) {
 	resp, _ := con.ShopCartGetById(&models.ShopCartprimarykey{
-		ProductId: "c9353095-9da2-46b5-bae3-9c83437ffb50",
-		UserId:    "c463393b-4690-4dfe-b5e0-7f4a7fa1b21e",
+		ProductId: "a80cc924-fec3-4717-8289-f23604de45ae",
+		UserId:    "ddc46ae9-6ccc-450a-ad74-50276f3c09f1",
 	})
 	fmt.Println(resp)
+}
+func GetAll_ShopCarts(con *controller.Controller) {
+	shopCarts, _ := con.ShopCartGetAll(&models.ShopCartGetListRequest{
+		Offset: 0,
+		Limit:  10,
+	})
+	for _, val := range shopCarts.Items {
+		fmt.Println(val)
+	}
+}
+func Update_ShopCart(con *controller.Controller) {
+	con.ShopCartUpdate(&models.UpdateShopCart{
+		ProductId: "ffa888f7-e0cb-44e9-9cae-8c4ca2a115b9",
+		UserId:    "e6ded598-675b-4de2-a1e9-00a876b8e719",
+		Count:     5,
+		Status:    true,
+	})
+}
+func Delete_ShopCard(con *controller.Controller) {
+	con.Delete_ShopCard(&models.ShopCartprimarykey{
+		ProductId: "a80cc924-fec3-4717-8289-f23604de45ae",
+		UserId:    "ddc46ae9-6ccc-450a-ad74-50276f3c09f1",
+	})
 }

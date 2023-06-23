@@ -4,7 +4,6 @@ type ShopCartprimarykey struct {
 	ProductId string `json:"product_id"`
 	UserId    string `json:"user_id"`
 }
-
 type ShopCart struct {
 	ProductId string `json:"product_id"`
 	UserId    string `json:"user_id"`
@@ -12,7 +11,6 @@ type ShopCart struct {
 	Status    bool   `json:"status"`
 	Time      string `json:"time"`
 }
-
 type CreateShopCart struct {
 	ProductId string `json:"product_id"`
 	UserId    string `json:"user_id"`
@@ -20,7 +18,6 @@ type CreateShopCart struct {
 	Status    bool   `json:"status"`
 	Time      string `json:"time"`
 }
-
 type UpdateShopCart struct {
 	ProductId string `json:"product_id"`
 	UserId    string `json:"user_id"`
@@ -28,7 +25,6 @@ type UpdateShopCart struct {
 	Status    bool   `json:"status"`
 	Time      string `json:"time"`
 }
-
 type ShopCartGetListRequest struct {
 	Offset int
 	Limit  int

@@ -37,6 +37,6 @@ type ShopCartRepoI interface {
 	Create(*models.CreateShopCart) (*models.ShopCart, error)
 	GetById(*models.ShopCartprimarykey) (*models.ShopCart, error)
 	GetAll(*models.ShopCartGetListRequest) (*models.ShopCartGetListResponse, error)
-	// Update(*models.UpdateShopCart) (*models.ShopCart, error)
-	// Delete(*models.ShopCartprimarykey) error
+	Update(*models.UpdateShopCart) (*models.ShopCart, error)
+	Delete(*models.ShopCartprimarykey) error
 }
