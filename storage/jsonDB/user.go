@@ -149,3 +149,24 @@ func (u *UserRepo) write(userMap map[string]models.User) error {
 	}
 	return nil
 }
+
+func (o *UserRepo) GetByUserId(req *models.UserPrimaryKey) (resp []models.ShopCart, err error) {
+	var items []models.ShopCart
+	body, err := ioutil.ReadFile("./data/order.json")
+	if err != nil {
+		return nil, err
+	}
+	err = json.Unmarshal(body, &items)
+	if err != nil {
+		log.Printf("error while Unmarshal ")
+		return nil, err
+	}
+
+	for _, item := range items {
+		if item.UserId == req.Id {
+			resp = append(resp, item)
+		}
+	}
+
+	return resp, nil
+}

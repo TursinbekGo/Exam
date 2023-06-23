@@ -34,11 +34,15 @@ type UserGetListResponse struct {
 	Users []*User
 }
 
-type UserHistory struct {
-	UserName    string `json:"user_name"`
-	Productname string `json:"product_name"`
-	Price       int    `json:"price"`
-	Count       int    `json:"count"`
-	TotalPrice  int    `json:"total_price"`
-	Time        string `json:"time"`
+type UserProducts struct {
+	UserName     string
+	UserProducts []*ProductUser
+}
+
+type ProductUser struct {
+	Name         string
+	ProductPrice int
+	ProductCount int
+	TotalPrice   int
+	Time         string
 }

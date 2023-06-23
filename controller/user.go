@@ -3,6 +3,8 @@ package controller
 import (
 	"app/models"
 	"errors"
+	"fmt"
+
 	"log"
 )
 
@@ -48,7 +50,92 @@ func (c *Controller) UserDelete(req *models.UserPrimaryKey) error {
 	}
 	return nil
 }
-func (c *Controller) UserHistory(req *models.ShopCartprimarykey) (*models.UserHistory, error) {
-	return nil, nil
+func (c *Controller) GetUserProducts(req *models.UserPrimaryKey) (resp *models.UserProducts, err error) {
+	// get user by id
+	user, err := c.Strg.User().GetById(req)
+	// logic for getting users order
+	orders, err := c.Strg.ShopCart().GetAll(&models.ShopCartGetListRequest{
+		Offset: 0,
+		Limit:  100,
+	})
+	var userOrders []models.ShopCart
+	for _, order := range orders.Items {
+		if order.UserId == req.Id {
+			userOrders = append(userOrders, *order)
+		}
+	}
+
+	resp = &models.UserProducts{}
+	resp.UserName = user.Name + " " + user.Surname
+
+	productsCount := map[string]int{}
+
+	for _, order := range userOrders {
+		productsCount[order.ProductId] += order.Count
+	}
+
+	for key, value := range productsCount {
+		// get product
+		product, err := c.Strg.Product().GetById(&models.ProductPrimaryKey{
+			Id: key,
+		})
+		if err != nil {
+			return nil, err
+		}
+
+		resp.UserProducts = append(resp.UserProducts, &models.ProductUser{
+			Name:         product.Name,
+			ProductCount: value,
+			ProductPrice: product.Price,
+			TotalPrice:   product.Price * value,
+		})
+
+	}
+
+	for _, item := range resp.UserProducts {
+		fmt.Println(item)
+	}
+	return
 }
-func (c *Controller) UserMoneySpent()
+func (c *Controller) UserMoneySpent(req *models.UserPrimaryKey) (resp *models.UserProducts, err error) {
+	user, err := c.Strg.User().GetById(req)
+	// logic for getting users order
+	orders, err := c.Strg.ShopCart().GetAll(&models.ShopCartGetListRequest{
+		Offset: 0,
+		Limit:  100,
+	})
+	var userOrders []models.ShopCart
+	for _, order := range orders.Items {
+		if order.UserId == req.Id {
+			userOrders = append(userOrders, *order)
+		}
+	}
+
+	resp = &models.UserProducts{}
+	resp.UserName = user.Name + " " + user.Surname
+
+	productsCount := map[string]int{}
+
+	for _, order := range userOrders {
+		productsCount[order.ProductId] += order.Count
+	}
+
+	for key, value := range productsCount {
+		// get product
+		product, err := c.Strg.Product().GetById(&models.ProductPrimaryKey{
+			Id: key,
+		})
+		if err != nil {
+			return nil, err
+		}
+		resp.UserProducts = append(resp.UserProducts, &models.ProductUser{
+			Name:       product.Name,
+			TotalPrice: product.Price * value,
+		})
+
+	}
+	for _, item := range resp.UserProducts {
+		fmt.Println(item)
+	}
+	return
+}

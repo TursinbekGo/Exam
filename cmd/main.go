@@ -16,34 +16,35 @@ func main() {
 	}
 	con := controller.NewController(&cfg, strg)
 	//User
-	CreateNewUser(con)
-	GetUserByID(con)
-	GetAll_Users(con)
-	Update_User(con)
-	Delete_User(con)
+	// CreateNewUser(con)
+	//GetUserByID(con)
+	// GetAll_Users(con)
+	// Update_User(con)
+	//Delete_User(con)
 	//Product
-	CreateNewProduct(con)
-	GetProductByID(con)
-	Update_Product(con)
-	Delete_Product(con)
-	GetAll_Products(con)
-	//Category
-	CreateNewCategory(con)
-	GetCategoryByID(con)
-	GetAll_Categoties(con)
-	Update_Category(con)
-	Delete_Category(con)
-	//ShopCart
-	CreateNewShopCart(con)
-	GetShopCartByID(con)
-	GetAll_ShopCarts(con)
-	Update_ShopCart(con)
-	Delete_ShopCard(con)
+	// CreateNewProduct(con)
+	// GetProductByID(con)
+	// Update_Product(con)
+	// Delete_Product(con)
+	// GetAll_Products(con)
+	// //Category
+	// CreateNewCategory(con)
+	// GetCategoryByID(con)
+	// GetAll_Categoties(con)
+	// Update_Category(con)
+	// Delete_Category(con)
+	// //ShopCart
+	// CreateNewShopCart(con)
+	// GetShopCartByID(con)
+	// GetAll_ShopCarts(con)
+	// Update_ShopCart(con)
+	// Delete_ShopCard(con)
+	UserHistory(con)
+	//UserMoney(con)
 
 }
 
 //User
-
 func CreateNewUser(con *controller.Controller) {
 	con.UserCreate(&models.CreateUser{
 		Name:    "Abdu",
@@ -189,5 +190,19 @@ func Delete_ShopCard(con *controller.Controller) {
 	con.Delete_ShopCard(&models.ShopCartprimarykey{
 		ProductId: "a80cc924-fec3-4717-8289-f23604de45ae",
 		UserId:    "ddc46ae9-6ccc-450a-ad74-50276f3c09f1",
+	})
+}
+
+//task-1
+func UserHistory(con *controller.Controller) {
+	con.GetUserProducts(&models.UserPrimaryKey{
+		Id: "05622de4-5be4-4254-8449-bcd3dd557631",
+	})
+}
+
+//task-4  ???
+func UserMoney(con *controller.Controller) {
+	con.UserMoneySpent(&models.UserPrimaryKey{
+		Id: "05622de4-5be4-4254-8449-bcd3dd557631",
 	})
 }
