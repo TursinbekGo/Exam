@@ -50,20 +50,27 @@ func (c *Controller) UserDelete(req *models.UserPrimaryKey) error {
 	}
 	return nil
 }
+
 func (c *Controller) GetUserProducts(req *models.UserPrimaryKey) (resp *models.UserProducts, err error) {
 	// get user by id
 	user, err := c.Strg.User().GetById(req)
 	// logic for getting users order
 	orders, err := c.Strg.ShopCart().GetAll(&models.ShopCartGetListRequest{
 		Offset: 0,
-		Limit:  100,
+		Limit:  10,
 	})
 	var userOrders []models.ShopCart
 	for _, order := range orders.Items {
+		//fmt.Println(order)
 		if order.UserId == req.Id {
-			userOrders = append(userOrders, *order)
+			//fmt.Println(order)
+			if order.Status {
+				userOrders = append(userOrders, *order)
+			}
 		}
+		//fmt.Println(order)
 	}
+	//fmt.Println(userOrders)
 
 	resp = &models.UserProducts{}
 	resp.UserName = user.Name + " " + user.Surname
@@ -72,6 +79,7 @@ func (c *Controller) GetUserProducts(req *models.UserPrimaryKey) (resp *models.U
 
 	for _, order := range userOrders {
 		productsCount[order.ProductId] += order.Count
+
 	}
 
 	for key, value := range productsCount {
@@ -90,10 +98,6 @@ func (c *Controller) GetUserProducts(req *models.UserPrimaryKey) (resp *models.U
 			TotalPrice:   product.Price * value,
 		})
 
-	}
-
-	for _, item := range resp.UserProducts {
-		fmt.Println(item)
 	}
 	return
 }

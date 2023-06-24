@@ -4,6 +4,7 @@ import (
 	"app/models"
 	"encoding/json"
 	"errors"
+	"fmt"
 	"io/ioutil"
 	"log"
 	"os"
@@ -71,6 +72,7 @@ func (u *UserRepo) GetAll(req *models.UserGetListRequest) (*models.UserGetListRe
 		users := val
 		resp.Users = append(resp.Users, &users)
 	}
+	fmt.Println(resp.Users)
 	return resp, nil
 }
 func (u *UserRepo) Update(req *models.UpdateUser) (*models.User, error) {
