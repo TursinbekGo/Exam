@@ -39,8 +39,10 @@ func main() {
 	//GetAll_ShopCarts(con)
 	// Update_ShopCart(con)
 	// Delete_ShopCard(con)
-	UserHistory(con)
-	//UserMoney(con)
+	//SortDateFilter(con)
+	//DateFilter(con)
+	//UserHistory(con)
+	MoneySpend(con)
 
 }
 
@@ -193,17 +195,35 @@ func Delete_ShopCard(con *controller.Controller) {
 	})
 }
 
-//task-1
+//task-1?
+func SortDateFilter(con *controller.Controller) {
+	con.Sort(&models.ShopCartGetListRequest{
+		Offset: 0,
+		Limit:  100,
+	})
+}
+
+//task-2
+func DateFilter(con *controller.Controller) {
+	con.DateSort(&models.ShopCartGetListRequest{
+		From: "2023-01-15 04:05:37",
+		To:   "2023-01-20 04:05:37",
+	})
+
+}
+
+//task-3
 func UserHistory(con *controller.Controller) {
 	resp, _ := con.GetUserProducts(&models.UserPrimaryKey{
 		Id: "e6ded598-675b-4de2-a1e9-00a876b8e719",
 	})
-	fmt.Println(resp)
+	fmt.Println(*resp)
 }
 
 //task-4  ???
-func UserMoney(con *controller.Controller) {
+
+func MoneySpend(con *controller.Controller) {
 	con.UserMoneySpent(&models.UserPrimaryKey{
-		Id: "05622de4-5be4-4254-8449-bcd3dd557631",
+		Id: "e6ded598-675b-4de2-a1e9-00a876b8e719",
 	})
 }

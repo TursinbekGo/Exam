@@ -63,23 +63,22 @@ func (u *ShopCartRepo) GetById(req *models.ShopCartprimarykey) (*models.ShopCart
 	return &item, nil
 }
 func (u *ShopCartRepo) GetAll(req *models.ShopCartGetListRequest) (*models.ShopCartGetListResponse, error) {
-
 	var resp = &models.ShopCartGetListResponse{}
-	resp.Items = []*models.ShopCart{}
+	resp.Items = []models.ShopCart{}
+
+	response := []models.ShopCart{}
+
 	ShopCartMap, err := u.read()
 	if err != nil {
 		return nil, err
 	}
-	resp.Count = len(ShopCartMap)
-	for _, val := range ShopCartMap {
-		user := val
-		for _, value := range user {
-			resp.Items = append(resp.Items, &value)
 
-		}
+	for _, val := range ShopCartMap {
+		response = append(response, val...)
 	}
 
-	return resp, nil
+	resp.Items = append(resp.Items, response...)
+	return resp, err
 }
 func (u *ShopCartRepo) Update(req *models.UpdateShopCart) (*models.ShopCart, error) {
 	var resp models.ShopCart

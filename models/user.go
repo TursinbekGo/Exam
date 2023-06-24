@@ -36,7 +36,7 @@ type UserGetListResponse struct {
 
 type UserProducts struct {
 	UserName     string
-	UserProducts []*ProductUser
+	UserProducts []ProductUser
 }
 
 type ProductUser struct {

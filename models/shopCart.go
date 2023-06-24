@@ -28,8 +28,17 @@ type UpdateShopCart struct {
 type ShopCartGetListRequest struct {
 	Offset int
 	Limit  int
+	From   string
+	To     string
 }
 type ShopCartGetListResponse struct {
 	Count int
-	Items []*ShopCart
+	Items []ShopCart
+}
+type ShopHistory struct {
+	ProductName string
+	Price       int
+	Count       int
+	TotalPrice  int
+	Time        string
 }
