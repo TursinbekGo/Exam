@@ -181,41 +181,112 @@ func (c *Controller) UserMoneySpent(req *models.UserPrimaryKey) (string, int) {
 	var (
 		UserTotalSpendMoney int = 0
 	)
-	History := make(map[string][]*models.ProductUser)
+	history, _ := c.GetUserProducts(&models.UserPrimaryKey{req.Id})
 	userName, _ := c.Strg.User().GetById(req)
-	for _, val := range History[userName.Name+" "+userName.Surname] {
-		if userName.Id == req.Id {
-			UserTotalSpendMoney += val.TotalPrice
-		}
-	}
-	fmt.Println(UserTotalSpendMoney)
-	return userName.Name, UserTotalSpendMoney
 
+	for _, val := range history.UserProducts {
+		UserTotalSpendMoney += val.TotalPrice
+	}
+	name := userName.Name + " " + userName.Surname
+	return name, UserTotalSpendMoney
 }
 
 //5
-// func (c *Controller) TotalSoldProducts() {
-// 	var (
-// 		totalCount = make(map[string]int)
-// 	)
-// 	data, err := read("/shop_cart.json")
-// 	if err != nil {
-// 		log.Printf("error while reading json ShopCart")
-// 		return
-// 	}
+func (c *Controller) TotalSoldProducts() {
+	var (
+		totalCount = make(map[string]int)
+	)
+	prod, err := c.Strg.ShopCart().GetAll(&models.ShopCartGetListRequest{})
+	if err != nil {
+		log.Printf("Error in get Shopcarts!!!")
+		return
+	}
+	for _, val := range prod.Items {
+		prodName, err := c.Strg.Product().GetById(&models.ProductPrimaryKey{val.ProductId})
+		if err != nil {
+			log.Println("Error while in getbyid product!!!", err)
+			return
+		}
+		if val.Status {
+			totalCount[prodName.Name] += val.Count
 
-// 	for _, value := range data {
-// 		totalCount(value)
-// 	}
-// 	fmt.Println(totalCount)
-// }
+		}
+	}
+
+	for key, val := range totalCount {
+		fmt.Println(key, ":", val)
+	}
+
+}
+
 //6
-// func (c *Controller) AvtiveProducts(limit int) map[string]int {
-// 	aktive_products := map[string]int{}
+func (c *Controller) AvtiveProducts(limit int) (string, int) {
+	var (
+		totalCount = make(map[string]int)
+	)
+	prod, err := c.Strg.ShopCart().GetAll(&models.ShopCartGetListRequest{})
+	if err != nil {
+		log.Printf("Error in get Shopcarts!!!")
+	}
+	for _, val := range prod.Items {
+		prodName, err := c.Strg.Product().GetById(&models.ProductPrimaryKey{val.ProductId})
+		if err != nil {
+			log.Println("Error while in getbyid product!!!", err)
+		}
+		if val.Status {
+			totalCount[prodName.Name] += val.Count
 
-// }
+		}
+	}
+	var active_products []int
+	keys := make([]string, 0, len(totalCount))
+	for key, val := range totalCount {
+		keys = append(keys, key)
+		active_products = append(active_products, val)
+	}
+	sort.Slice(active_products[:], func(i, j int) bool {
+		return active_products[:][i] > active_products[:][j]
+	})
+	//sort.Ints(aktive_products)
+	fmt.Println(active_products)
+
+	return "", 0
+}
+
 //7
 //passive
 //8
 //9
 //10
+
+func (c *Controller) ActiveClient() (string, error) {
+	clients := make(map[string]int)
+	items, err := c.ShopCartGetAll(&models.ShopCartGetListRequest{})
+	if err != nil {
+		return "", err
+	}
+
+	for _, val := range items.Items {
+		if val.Status == true {
+			itemsProduct, err := c.GetByIdPoduct(&models.ProductPrimaryKey{Id: val.ProductId})
+			if err != nil {
+				return " ", err
+			}
+			clients[val.UserId] += val.Count * itemsProduct.Price
+		}
+	}
+	client, sum := "", 0
+	for key, value := range clients {
+		if sum < value {
+			client = key
+			sum = value
+		}
+	}
+
+	itemsUser, err := c.UserGetById(&models.UserPrimaryKey{Id: client})
+	if err != nil {
+		return "", nil
+	}
+	name := itemsUser.Name + " " + itemsUser.Surname
+	return name, nil
+}
